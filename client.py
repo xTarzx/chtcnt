@@ -5,6 +5,8 @@ PORT = 4040
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
-    data = input("message > ")
-    s.sendall(data.encode())
-    s.recv(1024)
+    while data != 'exit':
+        data = input("message > ")
+        s.sendall(data.encode())
+        received = s.recv(1024)
+        print(received.decode())
