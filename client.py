@@ -7,3 +7,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     data = input("message > ")
     s.sendall(data.encode())
+    s.recv(1024)
