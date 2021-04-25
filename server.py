@@ -7,5 +7,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
     conn, addr = s.accept()
-    print("Connected", addr)
+    with conn:
+        print("Connected", addr)
+        data = conn.recv(1024)
+        print(data.decode())
     
