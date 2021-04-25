@@ -6,4 +6,4 @@ PORT = 4040
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     data = input("message > ")
-    s.sendall(bytes(data))
+    s.sendall(data.encode())
