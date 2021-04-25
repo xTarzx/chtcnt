@@ -11,4 +11,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print("Connected", addr)
         data = conn.recv(1024)
         print(data.decode())
-    
+        conn.sendall(b"Gay")
