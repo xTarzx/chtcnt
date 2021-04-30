@@ -33,6 +33,37 @@ class ChatPanel(wx.Panel):
         if text:
             print(text)
 
+class IPinput(wx.Dialog):
+    def __init__(self, parent):
+        super().__init__(parent, title = 'IP', size = (250,150))
+        panel = wx.Panel(self)
+
+        vertical_layout = wx.BoxSizer(wx.VERTICAL)
+        horizontal_layout = wx.BoxSizer(wx.HORIZONTAL)
+        user_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        input_user = wx.TextCtrl(panel)
+        input_ip = wx.TextCtrl(panel)
+        input_port = wx.TextCtrl(panel, size = (125, -1))
+
+        self.btn = wx.Button(panel, wx.ID_OK, label = 'OK', size = (50, 20), pos = (50, 90))
+        self.btn = wx.Button(panel, wx.ID_CANCEL, label = 'Cancel', size = (50, 20), pos = (150, 90))
+
+        colon_text = wx.StaticText(panel, label = ':')
+
+        horizontal_layout.Add(input_ip, 0, wx.ALL | wx.EXPAND, 5)
+        horizontal_layout.Add(colon_text, 0, wx.ALL, 5)
+        horizontal_layout.Add(input_port, 0, wx.ALL, 5)
+
+        username_text = wx.StaticText(panel, label = 'Username:')
+
+        user_layout.Add(username_text, 0, wx.ALL, 5)
+        user_layout.Add(input_user, 0, wx.ALL | wx.EXPAND, 5)
+        vertical_layout.Add(user_layout, 0, wx.ALL, 5)
+        vertical_layout.Add(horizontal_layout, 0, wx.ALL, 5)
+
+        panel.SetSizer(vertical_layout)
+
 class Test(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt")
@@ -50,7 +81,9 @@ class Test(wx.Frame):
         self.Show()
 
     def connect(self, event):
-        print("connect")
+        with IPinput(self) as dlg:
+            if dlg.ShowModal() == wx.ID_OK:
+                print('OK')
     
 
 if __name__ == "__main__":
