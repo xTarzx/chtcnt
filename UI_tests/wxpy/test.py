@@ -4,15 +4,18 @@ class ChatPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
         main_layout = wx.BoxSizer(wx.VERTICAL)
+        
 
+        ### CHAT ZONE
         chat_layout = wx.BoxSizer(wx.HORIZONTAL)
         
-        chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-        connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY).Enable(False)
+        connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
 
         chat_layout.Add(chat_messages, 1, wx.ALL | wx.EXPAND, 5)
         chat_layout.Add(connected_list, 0, wx.ALL | wx.EXPAND, 5)
 
+        ### INPUT ZONE
         input_layout = wx.BoxSizer(wx.HORIZONTAL)
         
         self.chat_input = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER)
@@ -22,6 +25,7 @@ class ChatPanel(wx.Panel):
         
         input_layout.Add(self.chat_input, 1, wx.ALL, 5)
         input_layout.Add(chat_send, 0, wx.ALL | wx.RIGHT, 5)
+
 
         main_layout.Add(chat_layout, 1, wx.ALL | wx.EXPAND, 5)
         main_layout.Add(input_layout, 0, wx.ALL | wx.EXPAND | wx.BOTTOM, 5)
@@ -35,34 +39,47 @@ class ChatPanel(wx.Panel):
 
 class IPinput(wx.Dialog):
     def __init__(self, parent):
-        super().__init__(parent, title = 'IP', size = (250,150))
+        super().__init__(parent, title = 'Connect', size = (300,200))
         panel = wx.Panel(self)
 
-        vertical_layout = wx.BoxSizer(wx.VERTICAL)
-        horizontal_layout = wx.BoxSizer(wx.HORIZONTAL)
-        user_layout = wx.BoxSizer(wx.HORIZONTAL)
-
+        main_layout = wx.BoxSizer(wx.VERTICAL)
+        
+        ### USERNAME
         input_user = wx.TextCtrl(panel)
+        username_layout = wx.BoxSizer(wx.HORIZONTAL)
+        username_label = wx.StaticText(panel, label = 'Username:')
+        username_layout.Add(username_label, 0, wx.ALL, 5)
+        username_layout.Add(input_user, 1, wx.ALL, 5)
+
+
+        ### IP PORT
+        ip_port_layout = wx.BoxSizer(wx.HORIZONTAL)
+        ip_label = wx.StaticText(panel, label = 'Server IP')
         input_ip = wx.TextCtrl(panel)
+        colon_label = wx.StaticText(panel, label = ':')
         input_port = wx.TextCtrl(panel, size = (125, -1))
 
-        self.btn = wx.Button(panel, wx.ID_OK, label = 'OK', size = (50, 20), pos = (50, 90))
-        self.btn = wx.Button(panel, wx.ID_CANCEL, label = 'Cancel', size = (50, 20), pos = (150, 90))
+        ip_port_layout.Add(ip_label, 0, wx.ALL, 5)
+        ip_port_layout.Add(input_ip, 0, wx.ALL | wx.EXPAND, 5)
+        ip_port_layout.Add(colon_label, 0, wx.ALL, 5)
+        ip_port_layout.Add(input_port, 0, wx.ALL, 5)
 
-        colon_text = wx.StaticText(panel, label = ':')
+        ### BUTTONS
 
-        horizontal_layout.Add(input_ip, 0, wx.ALL | wx.EXPAND, 5)
-        horizontal_layout.Add(colon_text, 0, wx.ALL, 5)
-        horizontal_layout.Add(input_port, 0, wx.ALL, 5)
+        button_layout = wx.BoxSizer(wx.HORIZONTAL)
+        self.ok_button = wx.Button(panel, wx.ID_OK, label = 'OK')
+        self.cancel_button = wx.Button(panel, wx.ID_CANCEL, label = 'Cancel')
 
-        username_text = wx.StaticText(panel, label = 'Username:')
+        button_layout.Add(self.ok_button, 0, wx.ALL, 5)
+        button_layout.Add(self.cancel_button, 0, wx.ALL, 5)
 
-        user_layout.Add(username_text, 0, wx.ALL, 5)
-        user_layout.Add(input_user, 0, wx.ALL | wx.EXPAND, 5)
-        vertical_layout.Add(user_layout, 0, wx.ALL, 5)
-        vertical_layout.Add(horizontal_layout, 0, wx.ALL, 5)
 
-        panel.SetSizer(vertical_layout)
+        main_layout.Add(username_layout, 0, wx.ALL | wx.EXPAND, 5)
+        main_layout.Add(ip_port_layout, 0, wx.ALL, 5)
+        main_layout.Add(button_layout, 0, wx.ALL | wx.CENTER, 5)
+
+        panel.SetSizer(main_layout)
+
 
 class Test(wx.Frame):
     def __init__(self):
