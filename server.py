@@ -24,6 +24,7 @@ class Server(object):
             while True:
                 try:
                     conn, addr = s.accept()
+                    print(f"Connection from {addr}", conn)
                     self.connections.append(conn)
                     _thread.start_new_thread(self.on_connect, (conn,))
                 except KeyboardInterrupt:
