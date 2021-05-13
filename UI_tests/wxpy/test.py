@@ -1,4 +1,5 @@
 import wx
+from client import Client
 
 class ChatPanel(wx.Panel):
     def __init__(self, parent):
@@ -9,7 +10,7 @@ class ChatPanel(wx.Panel):
         ### CHAT ZONE
         chat_layout = wx.BoxSizer(wx.HORIZONTAL)
         
-        chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY).Enable(False)
+        chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
         connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
 
         chat_layout.Add(chat_messages, 1, wx.ALL | wx.EXPAND, 5)
@@ -35,6 +36,7 @@ class ChatPanel(wx.Panel):
     def send(self, event):
         text = self.chat_input.GetValue()
         if text:
+            self.chat_input.Clear()
             print(text)
 
 class IPinput(wx.Dialog):
@@ -45,24 +47,24 @@ class IPinput(wx.Dialog):
         main_layout = wx.BoxSizer(wx.VERTICAL)
         
         ### USERNAME
-        input_user = wx.TextCtrl(panel)
+        self.input_user = wx.TextCtrl(panel)
         username_layout = wx.BoxSizer(wx.HORIZONTAL)
         username_label = wx.StaticText(panel, label = 'Username:')
         username_layout.Add(username_label, 0, wx.ALL, 5)
-        username_layout.Add(input_user, 1, wx.ALL, 5)
+        username_layout.Add(self.input_user, 1, wx.ALL, 5)
 
 
         ### IP PORT
         ip_port_layout = wx.BoxSizer(wx.HORIZONTAL)
         ip_label = wx.StaticText(panel, label = 'Server IP')
-        input_ip = wx.TextCtrl(panel)
+        self.input_ip = wx.TextCtrl(panel)
         colon_label = wx.StaticText(panel, label = ':')
-        input_port = wx.TextCtrl(panel, size = (125, -1))
+        self.input_port = wx.TextCtrl(panel, size = (125, -1))
 
         ip_port_layout.Add(ip_label, 0, wx.ALL, 5)
-        ip_port_layout.Add(input_ip, 0, wx.ALL | wx.EXPAND, 5)
+        ip_port_layout.Add(self.input_ip, 0, wx.ALL | wx.EXPAND, 5)
         ip_port_layout.Add(colon_label, 0, wx.ALL, 5)
-        ip_port_layout.Add(input_port, 0, wx.ALL, 5)
+        ip_port_layout.Add(self.input_port, 0, wx.ALL, 5)
 
         ### BUTTONS
 
@@ -80,10 +82,14 @@ class IPinput(wx.Dialog):
 
         panel.SetSizer(main_layout)
 
+    def GetValues(self):
+        return (self.input_user.GetValue(), self.input_ip.GetValue(), self.input_port.GetValue())
 
 class Test(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt")
+        self.client = Client()
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
         panel = ChatPanel(self)
 
         menu_bar = wx.MenuBar()
@@ -100,8 +106,13 @@ class Test(wx.Frame):
     def connect(self, event):
         with IPinput(self) as dlg:
             if dlg.ShowModal() == wx.ID_OK:
-                print('OK')
-    
+                username, ip, port = dlg.GetValues()
+                self.client.connect(ip, int(port))
+                print("not blocked")
+
+    def OnClose(self, event):
+        self.client.cleanup()
+        self.Destroy()
 
 if __name__ == "__main__":
     app = wx.App()
