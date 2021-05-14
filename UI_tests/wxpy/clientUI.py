@@ -99,6 +99,7 @@ class IPinput(wx.Dialog):
 class Test(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt")
+        self.SetIcon(wx.Icon("icon.ico"))
         self.client = Client(self)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.panel = ChatPanel(self)
