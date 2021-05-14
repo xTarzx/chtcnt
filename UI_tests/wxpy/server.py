@@ -32,9 +32,10 @@ class Server(object):
                             self.on_message(data)
                 except ConnectionResetError as err:
                     print(err)
-                    del self.connections[c]
-                    self.relay_user_list()
                     break
+            del self.connections[c]
+        self.relay_user_list()
+        
     def run(self, ip, port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((ip, port))

@@ -1,5 +1,6 @@
 import wx
 from client import Client
+from stuff import Message, IDCODES
 
 
 class ChatPanel(wx.Panel):
@@ -49,6 +50,10 @@ class ChatPanel(wx.Panel):
         self.connected_list.Clear()
         for user in message.content:
             self.connected_list.AppendText("{}\n".format(user))
+
+    def clear_all(self):
+        self.chat_messages.Clear()
+        self.connected_list.Clear()
 
 class IPinput(wx.Dialog):
     def __init__(self, parent):
@@ -106,11 +111,14 @@ class Test(wx.Frame):
 
         menu_bar = wx.MenuBar()
         file_menu = wx.Menu()
-        connect = file_menu.Append(wx.ID_ANY, "Connect", "Connect to server")
-
+        self.menu_connect = file_menu.Append(wx.ID_ANY, "Connect", "Connect to server")
+        self.menu_disconnect = file_menu.Append(wx.ID_ANY, "Disconnect", "Disconnect from server")
+        self.menu_disconnect.Enable(False)
+        
         menu_bar.Append(file_menu, "File")
 
-        self.Bind(wx.EVT_MENU, self.connect, connect)
+        self.Bind(wx.EVT_MENU, self.connect, self.menu_connect)
+        self.Bind(wx.EVT_MENU, self.disconnect, self.menu_disconnect)
         
         self.SetMenuBar(menu_bar)
         self.Show()
@@ -118,8 +126,18 @@ class Test(wx.Frame):
     def connect(self, event):
         with IPinput(self) as dlg:
             if dlg.ShowModal() == wx.ID_OK:
-                username, ip, port = dlg.GetValues()
-                self.client.connect(ip, int(port), username)
+                username, self.ip, port = dlg.GetValues()
+                connected = self.client.connect(self.ip, int(port), username)
+        if connected:
+            self.panel.clear_all()
+            self.menu_connect.Enable(False)
+            self.menu_disconnect.Enable(True)
+
+    def disconnect(self, event):
+        self.client.cleanup()
+        self.menu_connect.Enable(True)
+        self.menu_disconnect.Enable(False)
+        self.DisplayMessage(Message(IDCODES.SYSTEM, f"Disconnected from {self.ip}", "System"))
 
     def SendMessage(self, data):
         self.client.send_message(data)

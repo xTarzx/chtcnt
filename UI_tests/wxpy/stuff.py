@@ -6,6 +6,7 @@ class IDCODES:
     CONNECTED_LIST = 1
     SET_USERNAME = 3
     DISCONNECT = 9
+    SYSTEM = 69
 
 
 class Message:
