@@ -15,7 +15,7 @@ class Message:
         self.username = username
 
 
-def pack_message(ID, content, username):
+def pack_message(ID, content, username = None):
     return pickle.dumps(Message(ID, content, username))
 
 def unpack_message(message) -> Message:

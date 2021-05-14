@@ -13,10 +13,10 @@ class ChatPanel(wx.Panel):
         chat_layout = wx.BoxSizer(wx.HORIZONTAL)
         
         self.chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
 
         chat_layout.Add(self.chat_messages, 1, wx.ALL | wx.EXPAND, 5)
-        chat_layout.Add(connected_list, 0, wx.ALL | wx.EXPAND, 5)
+        chat_layout.Add(self.connected_list, 0, wx.ALL | wx.EXPAND, 5)
 
         ### INPUT ZONE
         input_layout = wx.BoxSizer(wx.HORIZONTAL)
@@ -43,6 +43,11 @@ class ChatPanel(wx.Panel):
 
     def display_message(self, message):
         self.chat_messages.AppendText("{}: {}\n".format(message.username, message.content))
+    
+    def display_connected(self, message):
+        self.connected_list.Clear()
+        for user in message.content:
+            self.connected_list.AppendText("{}\n".format(user))
 
 class IPinput(wx.Dialog):
     def __init__(self, parent):
@@ -116,6 +121,9 @@ class Test(wx.Frame):
 
     def SendMessage(self, data):
         self.client.send_message(data)
+    
+    def UpdateConnected(self, data):
+        self.panel.display_connected(data)
 
     def DisplayMessage(self, message):
         self.panel.display_message(message)
