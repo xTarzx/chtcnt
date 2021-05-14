@@ -1,19 +1,21 @@
 import wx
 from client import Client
 
+
 class ChatPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent = parent
         main_layout = wx.BoxSizer(wx.VERTICAL)
         
 
         ### CHAT ZONE
         chat_layout = wx.BoxSizer(wx.HORIZONTAL)
         
-        chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.chat_messages = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
         connected_list = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
 
-        chat_layout.Add(chat_messages, 1, wx.ALL | wx.EXPAND, 5)
+        chat_layout.Add(self.chat_messages, 1, wx.ALL | wx.EXPAND, 5)
         chat_layout.Add(connected_list, 0, wx.ALL | wx.EXPAND, 5)
 
         ### INPUT ZONE
@@ -37,7 +39,10 @@ class ChatPanel(wx.Panel):
         text = self.chat_input.GetValue()
         if text:
             self.chat_input.Clear()
-            print(text)
+            self.parent.SendMessage(text)
+
+    def display_message(self, message):
+        self.chat_messages.AppendText("{}: {}\n".format(message.username, message.content))
 
 class IPinput(wx.Dialog):
     def __init__(self, parent):
@@ -88,9 +93,9 @@ class IPinput(wx.Dialog):
 class Test(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt")
-        self.client = Client()
+        self.client = Client(self)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        panel = ChatPanel(self)
+        self.panel = ChatPanel(self)
 
         menu_bar = wx.MenuBar()
         file_menu = wx.Menu()
@@ -107,8 +112,13 @@ class Test(wx.Frame):
         with IPinput(self) as dlg:
             if dlg.ShowModal() == wx.ID_OK:
                 username, ip, port = dlg.GetValues()
-                self.client.connect(ip, int(port))
-                print("not blocked")
+                self.client.connect(ip, int(port), username)
+
+    def SendMessage(self, data):
+        self.client.send_message(data)
+
+    def DisplayMessage(self, message):
+        self.panel.display_message(message)
 
     def OnClose(self, event):
         self.client.cleanup()
