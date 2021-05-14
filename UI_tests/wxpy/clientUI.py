@@ -22,6 +22,7 @@ class ChatPanel(wx.Panel):
         input_layout = wx.BoxSizer(wx.HORIZONTAL)
         
         self.chat_input = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER)
+        self.chat_input.SetMaxLength(350)
         self.chat_input.Bind(wx.EVT_TEXT_ENTER, self.send)
         chat_send = wx.Button(self, label="Send")
         chat_send.Bind(wx.EVT_BUTTON, self.send)

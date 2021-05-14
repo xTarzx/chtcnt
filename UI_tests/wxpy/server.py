@@ -22,7 +22,7 @@ class Server(object):
         with c:
             while True:
                 try:
-                    data = c.recv(1024)
+                    data = c.recv(4096)
                     if data:
                         message = unpack_message(data)
                         if not self.connections[c] and message.ID == IDCODES.SET_USERNAME:

@@ -10,7 +10,7 @@ class Client(object):
     def handler(self):
         while True:
             try:
-                data = self.s.recv(1024)
+                data = self.s.recv(4096)
                 if data:
                     print("MESSAGE RECEIVED")
                     message = unpack_message(data)
