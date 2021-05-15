@@ -2,7 +2,7 @@ import wx
 from datetime import datetime
 from wx.lib import intctrl
 from server import Server
-
+import iconfile
 
 class ServerPanel(wx.Panel):
     def __init__(self, parent):
@@ -49,7 +49,7 @@ class ServerPanel(wx.Panel):
 class Main(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt Server")
-        self.SetIcon(wx.Icon("icon.ico"))
+        self.SetIcon(iconfile.icon.getIcon())
         self.server = Server(self)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 

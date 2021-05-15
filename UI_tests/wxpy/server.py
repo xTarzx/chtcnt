@@ -61,4 +61,8 @@ class Server(object):
             conn.close()
             print(conn, "Closed")
         self.connections.clear()
-        self.s.close()
+        try:
+            self.s.close()
+        except AttributeError:
+            pass
+        

@@ -2,7 +2,7 @@ import wx
 from wx.lib import intctrl
 from client import Client
 from stuff import Message, IDCODES
-
+import iconfile
 
 class ChatPanel(wx.Panel):
     def __init__(self, parent):
@@ -133,7 +133,7 @@ class IPinput(wx.Dialog):
 class Main(wx.Frame):
     def __init__(self):
         super().__init__(parent=None, title="ChtCnt")
-        self.SetIcon(wx.Icon("icon.ico"))
+        self.SetIcon(iconfile.icon.getIcon())
         self.client = Client(self)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.panel = ChatPanel(self)
