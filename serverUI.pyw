@@ -1,7 +1,6 @@
 import wx
-from datetime import datetime
-from wx.core import MenuBar
 from wx.lib import intctrl
+from datetime import datetime
 from server import Server
 import iconfile, darkMode
 
