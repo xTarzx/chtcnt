@@ -1,8 +1,9 @@
 import wx
 from datetime import datetime
+from wx.core import MenuBar
 from wx.lib import intctrl
 from server import Server
-import iconfile
+import iconfile, darkMode
 
 class ServerPanel(wx.Panel):
     def __init__(self, parent):
@@ -55,6 +56,15 @@ class Main(wx.Frame):
 
         self.panel = ServerPanel(self)
 
+        menu_bar = wx.MenuBar()
+        file_menu = wx.Menu()
+        self.dark_mode = file_menu.AppendCheckItem(wx.ID_ANY, "Dark Mode", "Toggle Dark Mode")
+
+        menu_bar.Append(file_menu, "File")
+
+        self.Bind(wx.EVT_MENU, self.OnToggleDarkMode, self.dark_mode)
+
+        self.SetMenuBar(menu_bar)
         self.Show()
 
     def DisplayLog(self, message):
@@ -73,6 +83,14 @@ class Main(wx.Frame):
     def OnClose(self, event):
         self.server.stop_server()
         self.Destroy()
+
+    def OnToggleDarkMode(self, event):
+        if self.dark_mode.IsChecked():
+            darkMode.darkMode(self, True)
+            self.Refresh()
+        else:
+            darkMode.darkMode(self, False)
+            self.Refresh()
 
 if __name__ == "__main__":
     app = wx.App()

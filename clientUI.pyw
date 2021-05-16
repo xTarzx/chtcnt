@@ -2,8 +2,7 @@ import wx
 from wx.lib import intctrl
 from client import Client
 from stuff import Message, IDCODES
-import iconfile
-import darkMode
+import iconfile, darkMode
 
 class ChatPanel(wx.Panel):
     def __init__(self, parent):
