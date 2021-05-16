@@ -2,7 +2,7 @@ import wx
 from wx.lib import intctrl
 from client import Client
 from stuff import Message, IDCODES
-import iconfile
+import iconfile, darkMode
 
 class ChatPanel(wx.Panel):
     def __init__(self, parent):
@@ -82,6 +82,7 @@ class IPinputValidator(wx.Validator):
 class IPinput(wx.Dialog):
     def __init__(self, parent):
         super().__init__(parent, title = 'Connect', size = (300,200))
+        self.parent = parent
 
         main_layout = wx.BoxSizer(wx.VERTICAL)
         
@@ -125,7 +126,14 @@ class IPinput(wx.Dialog):
         main_layout.Add(ip_port_layout, 0, wx.ALL, 5)
         main_layout.Add(button_layout, 0, wx.ALL | wx.CENTER, 5)
 
+        self.setColours()
         self.SetSizer(main_layout)
+
+    def setColours(self):
+        widgets = darkMode.getWidgets(self)
+        for widget in widgets:
+            widget.SetBackgroundColour(self.parent.GetBackgroundColour())
+            widget.SetForegroundColour(self.parent.GetForegroundColour())
 
     def GetValues(self):
         return (self.input_user.GetValue(), self.input_ip.GetValue(), self.input_port.GetValue())
@@ -142,13 +150,16 @@ class Main(wx.Frame):
         file_menu = wx.Menu()
         self.menu_connect = file_menu.Append(wx.ID_ANY, "Connect", "Connect to server")
         self.menu_disconnect = file_menu.Append(wx.ID_ANY, "Disconnect", "Disconnect from server")
+        self.dark_mode = file_menu.AppendCheckItem(wx.ID_ANY, "Dark Mode", "Toggle Dark Mode")
+
         self.menu_disconnect.Enable(False)
-        
+
         menu_bar.Append(file_menu, "File")
 
         self.Bind(wx.EVT_MENU, self.connect, self.menu_connect)
         self.Bind(wx.EVT_MENU, self.disconnect, self.menu_disconnect)
-        
+        self.Bind(wx.EVT_MENU, self.OnToggleDarkMode, self.dark_mode)
+
         self.SetMenuBar(menu_bar)
         self.Show()
 
@@ -184,6 +195,14 @@ class Main(wx.Frame):
     def OnClose(self, event):
         self.client.cleanup()
         self.Destroy()
+
+    def OnToggleDarkMode(self, event):
+        if self.dark_mode.IsChecked():
+            darkMode.darkMode(self, True)
+            self.Refresh()
+        else:
+            darkMode.darkMode(self, False)
+            self.Refresh()
 
 if __name__ == "__main__":
     app = wx.App()
